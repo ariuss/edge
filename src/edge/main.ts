@@ -378,4 +378,29 @@ export class Edge {
   share(data: Record<string, any>): EdgeRenderer {
     return this.createRenderer().share(data)
   }
+
+  /**
+   * Provide template engine callback for Express framework.
+   *
+   * ```js
+   * const app = express()
+   * const edge = new Edge()
+   *
+   * // register edge engine
+   * app.engine('edge', edge.express())
+   * app.set('views', './views')
+   * app.set('view engine', 'edge')
+   * ```
+   */
+  express() {
+    const self = this
+
+    return function (
+      filePath: string,
+      options: object,
+      callback: (err: Error | null, rendered: string) => void
+    ) {
+      self.render(filePath, options).then((html) => callback(null, html))
+    }
+  }
 }
